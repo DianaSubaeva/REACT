@@ -93,7 +93,7 @@ const offers: FullOffer[] = [
         ],
         'host': {
             'isPro': true,
-            'name': 'Maximilian',
+            'name': 'Max',
             'avatarUrl': '../../public/img/avatar-max.jpg'
         },
         'isPremium': true,
@@ -140,8 +140,8 @@ const offers: FullOffer[] = [
         ],
         'host': {
             'isPro': false,
-            'name': 'Sophie',
-            'avatarUrl': '../../public/img/avatar-sophie.jpg'
+            'name': 'Anna',
+            'avatarUrl': '../../public/img/avatar-anna.jpg'
         },
         'isPremium': false,
         'isFavorite': true,
@@ -188,8 +188,8 @@ const offers: FullOffer[] = [
         ],
         'host': {
             'isPro': true,
-            'name': 'Lucas',
-            'avatarUrl': '../../public/img/avatar-lucas.jpg'
+            'name': 'Oliver',
+            'avatarUrl': '../../public/img/avatar-oliver.jpg'
         },
         'isPremium': true,
         'isFavorite': false,
