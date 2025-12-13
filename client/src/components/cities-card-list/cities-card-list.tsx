@@ -30,6 +30,7 @@ function CitiesCardList({
                     previewImage={item.previewImage}
                     isPremium={item.isPremium}
                     rating={item.rating}
+                    isFavorite={item.isFavorite}
                     isNearby={isNearby}
                     onMouseOver={onOfferHover}
                     onMouseOut={onOfferLeave}

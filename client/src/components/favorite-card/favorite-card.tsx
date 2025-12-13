@@ -31,7 +31,7 @@ function FavoritesCard({ id, title, type, price, previewImage, isPremium, rating
                     </div>
                     <button className="place-card__bookmark-button place-card__bookmark-button--active button" type="button">
                         <svg className="place-card__bookmark-icon" width="18" height="19">
-                            <use href="#icon-bookmark"></use>
+                            <use href="/img/sprite.svg#icon-bookmark"></use>
                         </svg>
                         <span className="visually-hidden">In bookmarks</span>
                     </button>
