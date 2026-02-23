@@ -1,11 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
-import {User} from './user.js';
-import Comment from './comment.js';
-
 
 class Offer extends Model {}
-
 
 Offer.init({
   title: {
@@ -34,8 +30,6 @@ Offer.init({
   photos: {
     type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,
-
-
   },
   isPremium: {
     type: DataTypes.BOOLEAN,
@@ -91,13 +85,4 @@ Offer.init({
   tableName: 'offers'
 });
 
-
-// Связь с пользователем
-Offer.belongsTo(User, { as: 'author', foreignKey: 'authorId' });
-Offer.hasMany(Comment, { 
-  as: 'comments', 
-  foreignKey: 'offerId' 
-});
-
-
-export {Offer};
+export { Offer };

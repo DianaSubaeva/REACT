@@ -7,6 +7,9 @@ import router from './routes/index.js';
 import errorMiddleware from './middleware/ErrorHandlingMiddleware.js';
 import { fileURLToPath } from 'url';
 
+// 👇 ИМПОРТИРУЕМ АССОЦИАЦИИ
+import { defineAssociations } from './models/associations.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +28,10 @@ app.use('/static', express.static(path.resolve(__dirname, 'static')));
 const start = async () => {
     try {
         await sequelize.authenticate();
+        
+        // 👇 ВЫЗЫВАЕМ АССОЦИАЦИИ ПЕРЕД СИНХРОНИЗАЦИЕЙ
+        defineAssociations();
+        
         await sequelize.sync();
         app.listen(PORT, () => console.log(`Сервер запущен на порте ${PORT}`));
     } catch (e) {
