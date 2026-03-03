@@ -1,28 +1,30 @@
-import {Logo} from "../../components/logo/logo.tsx";
-import {CitiesCardList} from "../../components/cities-card-list/cities-card-list.tsx";
-import type {OffersList} from "../../types/offer.ts";
-import {cities} from "../../mocks/city.ts";
-import {useEffect, useState} from "react";
-import Map from "../../components/map/map.tsx"
-import type {City, Point} from "../../types/city.ts";
-import {CitiesList} from "../../components/cities-list/cities-list";
-import {useAppSelector} from "../../hooks";
-import {getOffersByCity, sortOffersByType} from "../../utils";
-import type {SortOffer} from "../../types/sort";
-import {SortOptions} from "../../components/sort-options/sort-options.tsx";
+import { Logo } from "../../components/logo/logo.tsx";
+import { CitiesCardList } from "../../components/cities-card-list/cities-card-list.tsx";
+import { LoadingPage } from "../../components/loading-page/loading-page.tsx"; 
+import type { OffersList } from "../../types/offer.ts";
+import { cities } from "../../mocks/city.ts";
+import { useEffect, useState } from "react";
+import Map from "../../components/map/map.tsx";
+import type { City, Point } from "../../types/city.ts";
+import { CitiesList } from "../../components/cities-list/cities-list";
+import { useAppSelector } from "../../hooks";
+import { getOffersByCity, sortOffersByType } from "../../utils";
+import type { SortOffer } from "../../types/sort";
+import { SortOptions } from "../../components/sort-options/sort-options.tsx";
 
 type MainPageProps = {
     rentalOffersCount: number;
     offersList: OffersList[];
 }
 
-function MainPage({offersList}: MainPageProps) {
-
+function MainPage({ offersList }: MainPageProps) {
     const selectedCity = useAppSelector((state) => state.city);
     const offersListSelector = useAppSelector((state) => state.offers);
+    const isLoading = useAppSelector((state) => state.isLoading); 
+    
     const selectedCityOffers = getOffersByCity(selectedCity?.title, offersListSelector);
     const rentalOffersCount = selectedCityOffers.length;
-    const [activeSort, setActiveSort] = useState<SortOffer>('Popular')
+    const [activeSort, setActiveSort] = useState<SortOffer>('Popular');
 
     const [selectedPoint, setSelectedPoint] = useState<Point | undefined>(undefined);
     const [city, setCity] = useState<City | null>(null);
@@ -58,13 +60,18 @@ function MainPage({offersList}: MainPageProps) {
         setSelectedPoint(undefined);
     };
 
+    
+    if (isLoading) {
+        return <LoadingPage />;
+    }
+
     return (
         <div className="page page--gray page--main">
             <header className="header">
                 <div className="container">
                     <div className="header__wrapper">
                         <div className="header__left">
-                            <Logo/>
+                            <Logo />
                         </div>
                         <nav className="header__nav">
                             <ul className="header__nav-list">
@@ -91,7 +98,7 @@ function MainPage({offersList}: MainPageProps) {
                 <h1 className="visually-hidden">Cities</h1>
                 <div className="tabs">
                     <section className="locations container">
-                        <CitiesList selectedCity={selectedCity}/>
+                        <CitiesList selectedCity={selectedCity} />
                     </section>
                 </div>
                 <div className="cities">
@@ -99,9 +106,9 @@ function MainPage({offersList}: MainPageProps) {
                         <section className="cities__places places">
                             <h2 className="visually-hidden">Places</h2>
                             <b className="places__found">{rentalOffersCount} places to stay in {selectedCity?.title}</b>
-                            <SortOptions activeSorting={ activeSort } onChange={ (newSorting) => setActiveSort(newSorting) }/>
+                            <SortOptions activeSorting={activeSort} onChange={(newSorting) => setActiveSort(newSorting)} />
                             <CitiesCardList
-                                offersList={sortOffersByType(selectedCityOffers,activeSort)}
+                                offersList={sortOffersByType(selectedCityOffers, activeSort)}
                                 isNearby={false}
                                 onOfferHover={handleOfferHover}
                                 onOfferLeave={handleOfferLeave}
@@ -125,4 +132,4 @@ function MainPage({offersList}: MainPageProps) {
     );
 }
 
-export {MainPage};
+export { MainPage };

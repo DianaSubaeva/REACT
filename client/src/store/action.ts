@@ -1,14 +1,15 @@
 import { createAction } from '@reduxjs/toolkit';
-import type {OffersList} from "../types/offer.ts";
-import type {City} from "../types/city.ts";
+import type { OffersList, CityOffer } from '../types/offer';
+import type { AuthorizationStatusType } from '../types/authorization-status';
 
+export const changeCity = createAction<CityOffer>('offers/changedity');
 
-const changeCity = createAction('offers/changedity', (city: City) => ({
-    payload: city
+export const offersCityList = createAction<OffersList[]>('offers/offersCityList');
+
+export const requireAuthorization = createAction<AuthorizationStatusType>('user/requireAuthorization');
+
+export const setError = createAction('setError', (error: string | null) => ({
+    payload: error
 }));
+export const setOffersDataLoadingStatus = createAction<boolean>('data/setOffersDataLoadingStatus');
 
-const offersCityList = createAction('offers/offersCityList', (offers: OffersList[]) => ({
-    payload: offers
-}));
-
-export { changeCity, offersCityList };
