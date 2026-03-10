@@ -5,6 +5,7 @@ import {AuthorizationStatus, CITIES_LOCATION} from "../conts.ts";
 import {getCityAsOffer} from "../utils";
 import type { AuthorizationStatusType } from '../types/authorization-status';
 
+
 const defaultCity =  getCityAsOffer('Paris', CITIES_LOCATION);
 
 export type InitialState = {

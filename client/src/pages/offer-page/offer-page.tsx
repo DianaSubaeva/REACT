@@ -9,6 +9,7 @@ import Map from "../../components/map/map.tsx";
 import type {City, Point} from "../../types/city.ts";
 import {CitiesCardList} from "../../components/cities-card-list/cities-card-list.tsx";
 
+
 type OfferProps = {
     offers: FullOffer[];
     reviews: ReviewType[];
