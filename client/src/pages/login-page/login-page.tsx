@@ -6,7 +6,7 @@ import { loginAction } from '../../store/api-action';
 import { AppRoute, AuthorizationStatus } from '../../conts';
 import type { AuthData } from '../../types/user-data';
 import { getAuthorizationStatus } from '../../store/selectors';
-
+   
 function LoginPage(){
  const loginRef = useRef<HTMLInputElement | null>(null);
  const passwordRef = useRef<HTMLInputElement | null>(null);
