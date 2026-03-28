@@ -1,4 +1,4 @@
-import type {OffersList} from "../../types/offer.ts";
+import type {OffersList} from "../../types/offers.ts";
 import {CitiesCard} from "../cities-card/cities-card.tsx";
 
 type CitiesCardListProps = {

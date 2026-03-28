@@ -1,28 +1,45 @@
 import { createReducer } from '@reduxjs/toolkit';
-import type { OffersList, CityOffer } from '../types/offer';
-import { changeCity, offersCityList,requireAuthorization, setError, setOffersDataLoadingStatus } from './action';
-import {AuthorizationStatus, CITIES_LOCATION} from "../conts.ts";
-import {getCityAsOffer} from "../utils";
+import { changeCity, offersCityList, requireAuthorization, setError, setOffersDataLoadingStatus, setUserEmail, setCurrentOffer, setCurrentOfferReviews, setCurrentOfferLoadingStatus, setCurrentOfferError } from './action';
+import { AuthorizationStatus, CITIES_LOCATION } from "../conts";
+import { getCity } from "../utils";
+import type { City } from '../types/city';
+import type { OffersList } from '../types/offers';
+import type { FullOffer } from '../types/offers';
+import type { ReviewType } from '../types/reviews';
 import type { AuthorizationStatusType } from '../types/authorization-status';
 
+const defaultCity = getCity('Paris', CITIES_LOCATION);
 
-const defaultCity =  getCityAsOffer('Paris', CITIES_LOCATION);
+const token = localStorage.getItem('rent-service-token');
+const initialAuthStatus = token
+    ? AuthorizationStatus.UnknownAuth
+    : AuthorizationStatus.NoAuth;
 
 export type InitialState = {
-    city: CityOffer | undefined;
+    city: City | undefined;
     offers: OffersList[];
     authorizationStatus: AuthorizationStatusType;
-    isOffersDataLoading: boolean,
     error: string | null;
+    isOffersDataLoading: boolean;
+    userEmail: string | null;
+    currentOffer: FullOffer | null;
+    currentOfferReviews: ReviewType[];
+    isCurrentOfferLoading: boolean;
+    currentOfferError: string | null;
 }
+
 const initialState: InitialState = {
     city: defaultCity,
     offers: [],
-    isOffersDataLoading: false,
-    authorizationStatus: AuthorizationStatus.UnknownAuth,
+    authorizationStatus: initialAuthStatus,
     error: null,
+    isOffersDataLoading: false,
+    userEmail: null,
+    currentOffer: null,
+    currentOfferReviews: [],
+    isCurrentOfferLoading: false,
+    currentOfferError: null,
 };
-
 
 const reducer = createReducer(initialState, (builder) => {
     builder
@@ -39,8 +56,23 @@ const reducer = createReducer(initialState, (builder) => {
             state.error = action.payload;
         })
         .addCase(setOffersDataLoadingStatus, (state, action) => {
-           state.isOffersDataLoading = action.payload;
-         })
+            state.isOffersDataLoading = action.payload;
+        })
+        .addCase(setUserEmail, (state, action) => {
+            state.userEmail = action.payload;
+        })
+        .addCase(setCurrentOffer, (state, action) => {
+            state.currentOffer = action.payload;
+        })
+        .addCase(setCurrentOfferReviews, (state, action) => {
+            state.currentOfferReviews = action.payload;
+        })
+        .addCase(setCurrentOfferLoadingStatus, (state, action) => {
+            state.isCurrentOfferLoading = action.payload;
+        })
+        .addCase(setCurrentOfferError, (state, action) => {
+            state.currentOfferError = action.payload;
+        });
 });
 
 export { reducer };

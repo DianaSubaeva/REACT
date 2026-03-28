@@ -1,5 +1,3 @@
-
-
 type OfferLocation = {
     latitude: number;
     longitude: number;
@@ -15,7 +13,7 @@ type HostOffer = {
     name: string;
     avatarUrl: string;
     isPro: boolean;
-};
+}
 
 export type FullOffer = {
     id: string;
@@ -33,6 +31,8 @@ export type FullOffer = {
     host: HostOffer;
     images: string[];
     maxAdults: number;
+    photos?: string[];
+    features?: string[];
 };
 
 export type OffersList = {

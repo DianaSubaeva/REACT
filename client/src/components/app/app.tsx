@@ -1,49 +1,50 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { MainPage } from "../../pages/main-page/main-page.tsx";
-import { AppRoute, AuthorizationStatus } from "../../conts.ts";
-import { LoginPage } from "../../pages/login-page/login-page.tsx";
-import { FavoritesPages } from "../../pages/favorites-page/favorites-page.tsx";
-import { OfferPage } from "../../pages/offer-page/offer-page.tsx";
-import { NotFound } from "../not-found/not-found.tsx";
-import { PrivateRoute } from "../private-route/private-route.tsx";
-import type { FullOffer, OffersList } from "../../types/offer.ts";
-import type { ReviewType } from "../../types/reviews.ts";
-import { LoadingPage } from "../loading-page/loading-page"; 
+import { MainPage } from "../../pages/main-page/main-page";
+import { AppRoute, AuthorizationStatus } from "../../conts";
+import { LoginPage } from "../../pages/login-page/login-page";
+import { FavoritesPages } from "../../pages/favorites-page/favorites-page";
+import { OfferPage } from "../../pages/offer-page/offer-page";
+import { NotFound } from "../not-found/not-found";
+import { PrivateRoute } from "../private-route/private-route";
 import { useAppSelector } from "../../hooks";
+import { LoadingPage } from "../loading-page/loading-page";
+import { useEffect } from "react";
+import { checkAuthAction } from "../../store/api-action";
+import { useAppDispatch } from "../../hooks";
 
 type AppMainPageProps = {
     rentalOffersCount: number;
-    offersList: OffersList[];
-    offers: FullOffer[];
-    reviews: ReviewType[];
 }
 
-function App({ rentalOffersCount, offers, offersList, reviews }: AppMainPageProps) {
+function App({ rentalOffersCount }: AppMainPageProps) {
+    const dispatch = useAppDispatch();
     const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
     const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+    const offers = useAppSelector((state) => state.offers);
+
+    useEffect(() => {
+        dispatch(checkAuthAction());
+    }, [dispatch]);
 
     if (authorizationStatus === AuthorizationStatus.UnknownAuth || isOffersDataLoading) {
-        return <LoadingPage />; 
+        return <LoadingPage />;
     }
 
     return (
         <BrowserRouter>
             <Routes>
-                <Route 
+                <Route
                     path={AppRoute.Main}
-                    element={<MainPage rentalOffersCount={rentalOffersCount} offersList={offersList} />}
+                    element={<MainPage rentalOffersCount={rentalOffersCount} offersList={offers} />}
                 />
                 <Route path={AppRoute.Login} element={<LoginPage />} />
-                <Route 
-                    path={`${AppRoute.Offer}/:id`} 
-                    element={<OfferPage offers={offers} reviews={reviews} />}
-                />
+                <Route path={`${AppRoute.Offer}/:id`} element={<OfferPage />} />
                 <Route path="*" element={<NotFound />} />
-                <Route 
-                    path={AppRoute.Favorites} 
+                <Route
+                    path={AppRoute.Favorites}
                     element={
                         <PrivateRoute authorizationStatus={authorizationStatus}>
-                            <FavoritesPages offersList={offersList} />
+                            <FavoritesPages offersList={offers} />
                         </PrivateRoute>
                     }
                 />

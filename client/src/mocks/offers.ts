@@ -1,4 +1,4 @@
-import type {FullOffer} from '../types/offer.ts';
+import type {FullOffer} from '../types/offers.ts';
 
 const offers: FullOffer[] = [
     {

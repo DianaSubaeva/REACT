@@ -1,11 +1,8 @@
 import axios from 'axios';
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { getToken } from './token';
-import { StatusCodes } from 'http-status-codes'; 
+import type { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 import { processErrorHandle } from './process-error-handle';
-
-const BACKEND_URL = 'http://localhost:5000';
-const REQUEST_TIMEOUT = 5000;
+import { getToken } from './token';
 
 type DetailMessageType = {
     type: string;
@@ -14,11 +11,13 @@ type DetailMessageType = {
 
 const StatusCodeMapping: Record<number, boolean> = {
     [StatusCodes.BAD_REQUEST]: true,
-    [StatusCodes.UNAUTHORIZED]: true,
-    [StatusCodes.NOT_FOUND]: true
+    [StatusCodes.NOT_FOUND]: true,
+    [StatusCodes.INTERNAL_SERVER_ERROR]: true,
 };
 
 const shouldDisplayError = (response: AxiosResponse) => !!StatusCodeMapping[response.status];
+const BACKEND_URL = 'http://localhost:5000';
+const REQUEST_TIMEOUT = 5000;
 
 export const createAPI = (): AxiosInstance => {
     const api = axios.create({
@@ -26,14 +25,14 @@ export const createAPI = (): AxiosInstance => {
         timeout: REQUEST_TIMEOUT,
     });
 
-    // Request interceptor
     api.interceptors.request.use(
         (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
             const token = getToken();
 
-            if (token) {
-                config.headers = config.headers || {};
+
+            if (token && config.headers) {
                 config.headers['x-token'] = token;
+                config.headers['Authorization'] = `Bearer ${token}`;
             }
 
             return config;
@@ -43,7 +42,6 @@ export const createAPI = (): AxiosInstance => {
         }
     );
 
-    // Response interceptor 👈 ТЕПЕРЬ ВНУТРИ ФУНКЦИИ
     api.interceptors.response.use(
         (response) => response,
         (error: AxiosError<DetailMessageType>) => {
@@ -52,9 +50,9 @@ export const createAPI = (): AxiosInstance => {
                 processErrorHandle(detailMessage.message);
             }
 
-            throw error;
+            return Promise.reject(error);
         }
     );
 
-    return api; 
+    return api;
 };

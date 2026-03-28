@@ -1,5 +1,7 @@
-import {Link} from "react-router-dom";
-import {AppRoute} from "../../conts.ts";
+import { Link } from "react-router-dom";
+import { useState, useCallback } from "react";
+import { AppRoute } from "../../const.ts";
+import { useFavorite } from "../../hooks/use-favorite";
 
 type FavoritesCardProps = {
     id: string;
@@ -9,10 +11,39 @@ type FavoritesCardProps = {
     isPremium: boolean;
     previewImage: string;
     rating: number;
+    onRemove?: () => void;
 }
 
-function FavoritesCard({ id, title, type, price, previewImage, isPremium, rating }: FavoritesCardProps) {
-    return(
+function FavoritesCard({
+    id,
+    title,
+    type,
+    price,
+    previewImage,
+    isPremium,
+    rating,
+    onRemove
+}: FavoritesCardProps) {
+    const [isRemoving, setIsRemoving] = useState(false);
+    const { toggleFavorite } = useFavorite();
+
+    const handleFavoriteClick = useCallback(async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (isRemoving) return;
+
+        setIsRemoving(true);
+        const success = await toggleFavorite(id, true);
+
+        if (success && onRemove) {
+            onRemove();
+        }
+
+        setIsRemoving(false);
+    }, [id, toggleFavorite, onRemove, isRemoving]);
+
+    return (
         <article className="favorites__card place-card">
             {isPremium ? (
                 <div className="place-card__mark">
@@ -20,25 +51,32 @@ function FavoritesCard({ id, title, type, price, previewImage, isPremium, rating
                 </div>) : null}
             <div className="favorites__image-wrapper place-card__image-wrapper">
                 <Link to={`${AppRoute.Offer}/${id}`}>
-                    <img className="place-card__image" src={previewImage} width="150" height="110" alt="Place image"/>
+                    <img className="place-card__image" src={previewImage} width="150" height="110" alt="Place image" />
                 </Link>
             </div>
             <div className="favorites__card-info place-card__info">
                 <div className="place-card__price-wrapper">
                     <div className="place-card__price">
-                        <b className="place-card__price-value">&euro;{ price }</b>
+                        <b className="place-card__price-value">&euro;{price}</b>
                         <span className="place-card__price-text">&#47;&nbsp;night</span>
                     </div>
-                    <button className="place-card__bookmark-button place-card__bookmark-button--active button" type="button">
+                    <button
+                        className="place-card__bookmark-button place-card__bookmark-button--active button"
+                        type="button"
+                        onClick={handleFavoriteClick}
+                        disabled={isRemoving}
+                    >
                         <svg className="place-card__bookmark-icon" width="18" height="19">
-                            <use href="/img/sprite.svg#icon-bookmark"></use>
+                            <use href="#icon-bookmark"></use>
                         </svg>
-                        <span className="visually-hidden">In bookmarks</span>
+                        <span className="visually-hidden">
+                            {isRemoving ? "Removing..." : "In bookmarks"}
+                        </span>
                     </button>
                 </div>
                 <div className="place-card__rating rating">
                     <div className="place-card__stars rating__stars">
-                        <span style={{width: `${rating * 20}%`}}></span>
+                        <span style={{ width: `${rating * 20}%` }}></span>
                         <span className="visually-hidden">Rating</span>
                     </div>
                 </div>
@@ -48,7 +86,7 @@ function FavoritesCard({ id, title, type, price, previewImage, isPremium, rating
                 <p className="place-card__type">{type}</p>
             </div>
         </article>
-    )
+    );
 }
 
-export {FavoritesCard};
+export { FavoritesCard };

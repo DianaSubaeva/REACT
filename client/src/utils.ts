@@ -1,5 +1,5 @@
 import type { City } from "./types/city.ts";
-import type { CityOffer, OffersList } from "./types/offer.ts";
+import type { CityOffer, OffersList } from "./types/offers.ts";
 import { SortOffersType } from "./conts.ts";
 import type { SortOffer } from "./types/sort.ts";
 

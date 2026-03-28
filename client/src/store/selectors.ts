@@ -1,5 +1,5 @@
-import { State } from '../types/state';
-import { AuthorizationStatusType } from '../types/authorization-status';
+import type{ State } from '../types/state';
+import type  { AuthorizationStatusType } from '../types/authorization-status';
 
 
 export const getAuthorizationStatus = (state: State): AuthorizationStatusType =>

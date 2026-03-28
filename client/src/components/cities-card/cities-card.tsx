@@ -1,6 +1,9 @@
-import {Link} from "react-router-dom";
-import {useState} from "react";
-import {AppRoute} from "../../conts.ts";
+import { Link } from "react-router-dom";
+import { useState, useCallback } from "react";
+import { AppRoute } from "../../conts.ts";
+import { useFavorite } from "../../hooks/use-favorite";
+import { useAppSelector } from "../../hooks";
+import { AuthorizationStatus } from "../../conts";
 
 type CitiesCardProps = {
     id: string;
@@ -10,40 +13,51 @@ type CitiesCardProps = {
     isPremium: boolean;
     previewImage: string;
     rating: number;
-    isFavorite?: boolean;
     isNearby?: boolean;
     onMouseOver?: (id: string) => void;
     onMouseOut?: () => void;
+    isFavorite: boolean;
 }
 
 function CitiesCard({
-                        id,
-                        title,
-                        type,
-                        price,
-                        previewImage,
-                        isPremium,
-                        rating,
-                        isFavorite = false,
-                        isNearby = false,
-                        onMouseOver,
-                        onMouseOut
-                    }: CitiesCardProps){
-    const [, setActiveOfferId] = useState('');
+    id,
+    title,
+    type,
+    price,
+    previewImage,
+    isPremium,
+    rating,
+    isNearby = false,
+    onMouseOver,
+    onMouseOut,
+    isFavorite: initialIsFavorite
+}: CitiesCardProps) {
+    const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
+    const [isToggling, setIsToggling] = useState(false);
+    const { toggleFavorite } = useFavorite();
+    const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+    const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
-    const handleMouseOver = () => {
-        setActiveOfferId(id);
-        if (onMouseOver) {
-            onMouseOver(id);
-        }
-    };
+    const handleFavoriteClick = useCallback(async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-    const handleMouseOut = () => {
-        setActiveOfferId('');
-        if (onMouseOut) {
-            onMouseOut();
+        if (!isAuth) {
+            window.location.href = AppRoute.Login;
+            return;
         }
-    };
+
+        if (isToggling) return;
+
+        setIsToggling(true);
+        const success = await toggleFavorite(id, isFavorite);
+
+        if (success) {
+            setIsFavorite(!isFavorite);
+        }
+
+        setIsToggling(false);
+    }, [id, isFavorite, isToggling, toggleFavorite, isAuth]);
 
     const imageWrapperClass = isNearby
         ? "near-places__image-wrapper place-card__image-wrapper"
@@ -56,8 +70,8 @@ function CitiesCard({
     return (
         <article
             className={articleClass}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
+            onMouseOver={() => onMouseOver?.(id)}
+            onMouseOut={onMouseOut}
         >
             {isPremium && (
                 <div className="place-card__mark">
@@ -82,17 +96,24 @@ function CitiesCard({
                         <b className="place-card__price-value">&euro;{price}</b>
                         <span className="place-card__price-text">&#47;&nbsp;night</span>
                     </div>
-                    <button className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''}`} 
-    type="button">
-    <svg className="place-card__bookmark-icon" width="18" height="19">
-        <use href="/img/sprite.svg#icon-bookmark"></use>
-    </svg>
-    <span className="visually-hidden">To bookmarks</span>
-</button>
+                    <button
+                        className={`place-card__bookmark-button button ${isFavorite ? "place-card__bookmark-button--active" : ""
+                            }`}
+                        type="button"
+                        onClick={handleFavoriteClick}
+                        disabled={isToggling}
+                    >
+                        <svg className="place-card__bookmark-icon" width="18" height="19">
+                            <use href="/img/sprite.svg#icon-bookmark"></use>
+                        </svg>
+                        <span className="visually-hidden">
+                            {isFavorite ? "In bookmarks" : "To bookmarks"}
+                        </span>
+                    </button>
                 </div>
                 <div className="place-card__rating rating">
                     <div className="place-card__stars rating__stars">
-                        <span style={{width: `${rating * 20}%`}}></span>
+                        <span style={{ width: `${rating * 20}%` }}></span>
                         <span className="visually-hidden">Rating</span>
                     </div>
                 </div>
@@ -107,4 +128,4 @@ function CitiesCard({
     );
 }
 
-export {CitiesCard};
+export { CitiesCard };

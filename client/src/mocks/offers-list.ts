@@ -1,4 +1,4 @@
-import type {FullOffer, OffersList} from '../types/offer';
+import type {FullOffer, OffersList} from '../types/offers';
 
 export const mapFullOffersToOffersList = (fullOffers: FullOffer[]): OffersList[] => {
     return fullOffers.map((offer) => ({
