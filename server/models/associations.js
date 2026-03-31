@@ -10,12 +10,14 @@ export const defineAssociations = () => {
   User.belongsToMany(Offer, {
     through: 'UserFavoriteOffers',
     as: 'favoriteOffers',
-    foreignKey: 'userId'
+    foreignKey: 'userId',
+    otherKey: 'offerId'  
   });
 
   Offer.belongsToMany(User, {
     through: 'UserFavoriteOffers',
     as: 'usersWhoFavorited',
-    foreignKey: 'offerId'
+    foreignKey: 'offerId',
+    otherKey: 'userId'
   });
 };

@@ -4,12 +4,12 @@ import { Logo } from "../../components/logo/logo.tsx";
 import { ReviewForm } from "../../components/review-form/review-form.tsx";
 import { ReviewsList } from "../../components/review-list/review-list.tsx";
 import Map from "../../components/map/map.tsx";
-import { CitiesCardList } from "../../components/CitiesCardList/CitiesCardList.tsx";
+import { CitiesCardList } from "../../components/cities-card-list/cities-card-list.tsx";
 import { NotFound } from "../../components/not-found/not-found.tsx";
 import { LoadingPage } from "../../components/loading-page/loading-page.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchOfferAction, logoutAction } from "../../store/api-action";
-import { AuthorizationStatus, AppRoute } from "../../const";
+import { AuthorizationStatus, AppRoute } from "../../conts";
 import type { City, Point } from "../../types/city.ts";
 import type { OffersList } from "../../types/offers.ts";
 import { useFavorite } from "../../hooks/use-favorite";
@@ -256,32 +256,43 @@ function OfferPage() {
                                 </ul>
                             </div>
                             <div className="offer__host">
-                                <h2 className="offer__host-title">Meet the host</h2>
-                                <div className="offer__host-user user">
-                                    <div className={`offer__avatar-wrapper ${currentOffer.host?.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
-                                        <img
-                                            className="offer__avatar user__avatar"
-                                            src={currentOffer.host?.avatarUrl || ''}
-                                            width="74"
-                                            height="74"
-                                            alt="Host avatar"
-                                        />
-                                    </div>
-                                    <span className="offer__user-name">
-                                        {currentOffer.host?.name || 'Unknown'}
-                                    </span>
-                                    {currentOffer.host?.isPro && (
-                                        <span className="offer__user-status">
-                                            Pro
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="offer__description">
-                                    <p className="offer__text">
-                                        {currentOffer.description || ''}
-                                    </p>
-                                </div>
-                            </div>
+    <h2 className="offer__host-title">Meet the host</h2>
+    <div className="offer__host-user user">
+        <div className={`offer__avatar-wrapper ${currentOffer.author?.userType === 'pro' ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
+            <img
+                className="offer__avatar user__avatar"
+                src={(() => {
+                    const avatar = currentOffer.author?.avatar;
+                    return avatar && avatar.trim() !== '' ? avatar : '/img/avatar-oliver.jpg';
+                })()}
+                width="74"
+                height="74"
+                alt="Host avatar"
+                style={{
+                    objectFit: 'cover',
+                    borderRadius: '50%',
+                    width: '74px',
+                    height: '74px'
+                }}
+                onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/img/avatar-oliver.jpg';
+                }}
+            />
+        </div>
+        <span className="offer__user-name">
+            {currentOffer.author?.username || currentOffer.author?.name || 'Host'}
+        </span>
+        {currentOffer.author?.userType === 'pro' && (
+            <span className="offer__user-status">Pro</span>
+        )}
+    </div>
+    <div className="offer__description">
+        <p className="offer__text">
+            {currentOffer.description || ''}
+        </p>
+    </div>
+</div>
 
                             <ReviewsList reviews={currentOfferReviews || []} />
 

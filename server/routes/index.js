@@ -8,4 +8,4 @@ router.use('/', offerRouter);
 router.use('/', userRotes);
 router.use('/comments', reviewRouter);
 
-export default router ;
+export {router};

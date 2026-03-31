@@ -9,10 +9,15 @@ export type CityOffer = {
     location: OfferLocation;
 };
 
-type HostOffer = {
+export type AuthorOffer = {  // 👈 Переименуем HostOffer в AuthorOffer
     name: string;
-    avatarUrl: string;
+    username?: string;     // добавим для совместимости
+    avatarUrl?: string;    // может быть avatar или avatarUrl
+    avatar?: string;       // как приходит с бэкенда
     isPro: boolean;
+    userType?: 'normal' | 'pro';  // как приходит с бэкенда
+    email?: string;        // опционально
+    id?: string;           // опционально
 }
 
 export type FullOffer = {
@@ -28,7 +33,7 @@ export type FullOffer = {
     description: string;
     bedrooms: number;
     goods: string[];
-    host: HostOffer;
+    host: AuthorOffer;
     images: string[];
     maxAdults: number;
     photos?: string[];

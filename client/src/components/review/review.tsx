@@ -17,7 +17,13 @@ function Review(props: ReviewProps) {
                         src={review.user.avatarUrl}
                         width="54"
                         height="54"
-                        alt="Reviews avatar"
+                        alt={`${review.user?.name || 'User'} avatar`}
+                        style={{
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            width: '54px',
+                            height: '54px'
+                        }}
                     />
                 </div>
                 <span className="reviews__user-name">

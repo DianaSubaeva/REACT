@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import type { FormEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { loginAction } from '../../store/api-action';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../conts';
 import type { AuthData } from '../../types/user-data';
 import { getAuthorizationStatus } from '../../store/selectors';
 
